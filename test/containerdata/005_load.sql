@@ -1,0 +1,1 @@
+COPY devices FROM '/tmp/devices.csv' DELIMITER ',' CSV HEADER;
