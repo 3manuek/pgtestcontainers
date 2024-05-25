@@ -35,8 +35,8 @@ func TestTimescale(t *testing.T) {
 		tc.WithImage("timescale/timescaledb:latest-pg16"),
 		// We execute the generator with docker-compose, so we have a deterministic test
 		// postgres.WithInitScripts(filepath.Join("test/containerdata", "003_generator.sql")),
-		postgres.WithInitScripts(filepath.Join("test/containerdata", "004_init.sql")),
-		postgres.WithInitScripts(filepath.Join("test/containerdata", "005_load.sql")),
+		postgres.WithInitScripts(filepath.Join("test/timescale", "004_init.sql")),
+		postgres.WithInitScripts(filepath.Join("test/timescale", "005_load.sql")),
 		postgres.WithDatabase(dbName),
 		postgres.WithUsername(dbUser),
 		postgres.WithPassword(dbPassword),

@@ -28,5 +28,5 @@ services:
       - 15432:5432
     volumes:
       - ./_pgdata:/var/lib/postgresql/data
-      - ./test/containerdata:/docker-entrypoint-initdb.d
+      - ./test/timescale:/docker-entrypoint-initdb.d
       - ./test/containerdata/devices.csv:/tmp/devices.csv
