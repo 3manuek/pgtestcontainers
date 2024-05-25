@@ -1,0 +1,32 @@
+
+networks:
+  # A network for the data traffic 
+  data:
+
+services:
+
+  timescale:
+    image: timescale/timescaledb:latest-pg16
+    ## Once in prod
+    # restart: always
+    container_name: "pgtc-ts"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=iot
+      - TS_TUNE_MEMORY=1GB
+      - TS_TUNE_WAL=1GB
+      - TS_TUNE_NUM_CPUS=2
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - data
+    ports:
+      - 15432:5432
+    volumes:
+      - ./_pgdata:/var/lib/postgresql/data
+      - ./test/containerdata:/docker-entrypoint-initdb.d
+      - ./test/containerdata/devices.csv:/tmp/devices.csv
