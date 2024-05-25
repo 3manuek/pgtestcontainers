@@ -10,18 +10,23 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-// go test -v main_test.go -args -pgaURL=...
+// go test -v main_test.go -args -imageName=...
 var imageName = flag.String("imageName", "postgres:16-bookworm", "URL of the image")
 
-// var registry = flag.String("registry", "", "Registry domain")
+var registry = flag.String("registry", "", "Registry domain")
 
 // TODO implement https://www.lambdatest.com/automation-testing-advisor/golang/methods/testcontainers-go_go.wait.ForSQL
 // https://golang.testcontainers.org/quickstart/
 func TestGenericContainer(t *testing.T) {
-	// var URL = *registry + "/" + *imageName
+	var URL string
+	if *registry != "" {
+		URL = *registry + "/" + *imageName
+	} else {
+		URL = *imageName
+	}
 	ctx := context.Background()
 	req := tc.ContainerRequest{
-		Image:        *imageName,
+		Image:        URL,
 		ExposedPorts: []string{"5432/tcp"},
 		Env: map[string]string{
 			"POSTGRES_PASSWORD":         "postgres",
