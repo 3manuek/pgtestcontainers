@@ -67,16 +67,17 @@ func TestTimescale(t *testing.T) {
 	// This sleep handles the wait on processing files, we should do an active check here
 	// instead of waiting
 	time.Sleep(20 * time.Second)
+
 	log.Println(postgresContainer.State(ctx))
 
 	// Database pointer creation
 	connStr, err := postgresContainer.ConnectionString(ctx, "sslmode=disable")
 	if err != nil {
-		log.Fatalf("failed to get connection string: %s", err)
+		t.Fatalf("failed to get connection string: %s", err)
 	}
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatalf("failed to open database: %s", err)
+		t.Fatalf("failed to open database: %s", err)
 	}
 	defer db.Close()
 
@@ -84,24 +85,26 @@ func TestTimescale(t *testing.T) {
 	testCtx, testCtxCancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer testCtxCancel()
 
-	// Test Case
+	// Test Case: Create NewDevices
 	d, err := models.NewDevices(testCtx, db)
 	if err != nil {
 		t.Fatalf("failed to open database: %s", err)
 	}
 
-	log.Println("Bounds:", d.Bounds)
 	// Add assertion that d.Bounds is not nil
 	if d.Bounds == nil {
 		t.Fatalf("Bounds are empty: %v", d.Bounds)
 	}
+	log.Println("Bounds:", d.Bounds)
 
+	// Test Case: Aggregate without CAMV
 	agg, _ := d.AggregateMaxCPUMinuteWOMV(testCtx)
 	if len(agg) == 0 {
 		t.Fatalf("AggregateMaxCPUMinuteWOMV is empty: %v", agg)
 	}
 	log.Println(len(agg))
 
+	// Test Case: Execute plain command inside the container
 	if _, out, err := postgresContainer.Exec(ctx, []string{"psql", "-U", dbUser, "-w", dbName, "-c", `SELECT count(*) from devices;`}); err != nil {
 		log.Println(err)
 		t.Fatal("couldn't count devices")

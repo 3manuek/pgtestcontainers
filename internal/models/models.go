@@ -87,7 +87,6 @@ func (d *Devices) AggregateMaxCPUMinuteWOMV(ctx context.Context) ([]Aggs, error)
 func (d *Devices) AggregateMaxCPUMinuteWMV(ctx context.Context) ([]Aggs, error) {
 	a := []Aggs{}
 	Query(ctx, d.Conn, AggregationWMV, &a)
-	// SingleRowQuery(ctx, d.Conn, AggregationWOMV, &a.Minute, &a.Device, &a.Cpu)
 	return a, nil
 }
 

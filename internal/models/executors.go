@@ -8,10 +8,16 @@ import (
 	"github.com/blockloop/scan"
 )
 
+// SingleRowQuery executes a query that returns a single row.
+//
+// Call it passing ctx, db and columns of the structure.
 func SingleRowQuery(ctx context.Context, db *sql.DB, query string, rows ...interface{}) {
 	db.QueryRowContext(ctx, query).Scan(rows...)
 }
 
+// Query executes a query that returns one or more rows.
+//
+// It can handle passing ctx, db and output []structure, to be parset at the caller.
 func Query(ctx context.Context, db *sql.DB, query string, rows interface{}) error {
 	r, err := db.QueryContext(ctx, query)
 	if err != nil {
